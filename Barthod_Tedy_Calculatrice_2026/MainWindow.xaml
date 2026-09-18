@@ -1,0 +1,118 @@
+﻿<Window x:Class="Barthod_Tedy_Calculatrice_2026.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Barthod_Tedy_Calculatrice_2026"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="150"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBox Grid.Row="0" Grid.ColumnSpan="4" Name="TB_Display"></TextBox>
+
+        <Button Grid.Row="1" Grid.Column="0" Name="BTN_1" Content="1"/>
+        <Button Grid.Row="1" Grid.Column="1" Name="BTN_2" Content="2"/>
+        <Button Grid.Row="1" Grid.Column="2" Name="BTN_3" Content="3"/>
+        <Button Grid.Row="1" Grid.Column="3" Name="BTN_Plus" Content="+"/>
+
+        <Button Grid.Row="2" Grid.Column="0" Name="BTN_4" Content="4" Click="BTN_4_Click"/>
+        <Button Grid.Row="2" Grid.Column="1" Name="BTN_5" Content="5"/>
+        <Button Grid.Row="2" Grid.Column="2" Name="BTN_6" Content="6"/>
+        <Button Grid.Row="2" Grid.Column="3" Name="BTN_Moin" Content="-"/>
+
+        <Button Grid.Row="3" Grid.Column="0" Name="BTN_7" Content="7"/>
+        <Button Grid.Row="3" Grid.Column="1" Name="BTN_8" Content="8"/>
+        <Button Grid.Row="3" Grid.Column="2" Name="BTN_9" Content="9"/>
+        <Button Grid.Row="3" Grid.Column="3" Name="BTN_Multipliee" Content="*"/>
+
+        <Button Grid.Row="4" Grid.Column="0" Name="Btn_0" Content="0"/>
+        <Button Grid.Row="4" Grid.Column="1" Name="Btn_Ctrl" Content="ctrl"/>
+        <Button Grid.Row="4" Grid.Column="2" Name="Btn_egale" Content="="/>
+        <Button Grid.Row="4" Grid.Column="3" Name="Btn_divisée" Content="/"/>
+
+        <Grid.Resources>
+
+            <!-- Style de tous les boutons -->
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Background" Value="BlueViolet"/>
+                <Setter Property="FontSize" Value="38"/>
+
+                <!-- AJOUT DES TRIGGERS -->
+                <Style.Triggers>
+
+                    <!-- Quand la souris passe sur le bouton -->
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="DarkGray"/>
+                        <Setter Property="Foreground" Value="White"/>
+                    </Trigger>
+
+                    <!-- Quand on clique sur le bouton -->
+                    <EventTrigger RoutedEvent="Click">
+                        <EventTrigger.Actions>
+
+                            <BeginStoryboard>
+                                <Storyboard BeginTime="00:00:00"
+                                            AutoReverse="True">
+
+                                    <Storyboard.TargetProperty>
+                                        (Button.Background).(SolidColorBrush.Color)
+                                    </Storyboard.TargetProperty>
+
+                                    <ColorAnimation To="WhiteSmoke"
+                                                    Duration="0:0:0.05"/>
+
+                                </Storyboard>
+                            </BeginStoryboard>
+
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+
+                </Style.Triggers>
+            </Style>
+
+
+            <!-- Ton deuxième style reste inchangé -->
+            <Style x:Key="MyStyle" TargetType="{x:Type Control}">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Background" Value="Green"/>
+                <Setter Property="FontSize" Value="38"/>
+            </Style>
+
+
+            <!-- Style de la TextBox -->
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Background" Value="Black"/>
+                <Setter Property="FontSize" Value="38"/>
+                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Style.Resources>
+
+            </Style>
+
+        </Grid.Resources>
+
+    </Grid>
+
+</Window>
