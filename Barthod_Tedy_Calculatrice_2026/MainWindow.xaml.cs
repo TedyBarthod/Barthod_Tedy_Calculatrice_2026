@@ -12,37 +12,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
- 
 
 namespace Barthod_Tedy_Calculatrice_2026
 {
-    /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        // déclaration  Variables 
+        // déclaration Variables 
         int NB1 = 0;
         int NB2 = 0;
         int result = 0;
         char operation = ' ';
-
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void BTN_4_Click(object sender, RoutedEventArgs e)
-        {
-            TB_Display.Text = TB_Display.Text + "4";
-        }
-
-        private void Btn_Ctrl_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
+        // ===== Chiffres =====
         private void BTN_1_Click(object sender, RoutedEventArgs e)
         {
             TB_Display.Text = TB_Display.Text + "1";
@@ -53,11 +39,14 @@ namespace Barthod_Tedy_Calculatrice_2026
             TB_Display.Text = TB_Display.Text + "2";
         }
 
-        
-
         private void BTN_3_Click(object sender, RoutedEventArgs e)
         {
             TB_Display.Text = TB_Display.Text + "3";
+        }
+
+        private void BTN_4_Click(object sender, RoutedEventArgs e)
+        {
+            TB_Display.Text = TB_Display.Text + "4";
         }
 
         private void BTN_5_Click(object sender, RoutedEventArgs e)
@@ -90,34 +79,81 @@ namespace Barthod_Tedy_Calculatrice_2026
             TB_Display.Text = TB_Display.Text + "0";
         }
 
+        // ===== Opérateurs =====
+        // Quand on clique sur un opérateur : on mémorise NB1 et l'opérateur,
+        // puis on vide l'écran pour laisser l'utilisateur taper NB2
+
         private void BTN_Plus_Click(object sender, RoutedEventArgs e)
         {
-            TB_Display.Text = "+"; 
+            NB1 = int.Parse(TB_Display.Text);
+            operation = '+';
+            TB_Display.Text = "";
         }
 
         private void BTN_Moin_Click(object sender, RoutedEventArgs e)
         {
-                        TB_Display.Text = "-";
+            NB1 = int.Parse(TB_Display.Text);
+            operation = '-';
+            TB_Display.Text = "";
         }
 
         private void BTN_Multipliee_Click(object sender, RoutedEventArgs e)
         {
-            TB_Display.Text = "*";
+            NB1 = int.Parse(TB_Display.Text);
+            operation = '*';
+            TB_Display.Text = "";
         }
 
         private void Btn_divisée_Click(object sender, RoutedEventArgs e)
         {
-                        TB_Display.Text = "/";  
+            NB1 = int.Parse(TB_Display.Text);
+            operation = '/';
+            TB_Display.Text = "";
         }
 
+        // ===== Égale =====
         private void Btn_egale_Click(object sender, RoutedEventArgs e)
         {
-            TB_Display.Text = "=";
+            NB2 = int.Parse(TB_Display.Text);
+
+            if (operation == '+')
+            {
+                result = NB1 + NB2;
+            }
+            else if (operation == '-')
+            {
+                result = NB1 - NB2;
+            }
+            else if (operation == '*')
+            {
+                result = NB1 * NB2;
+            }
+            else if (operation == '/')
+            {
+                if (NB2 == 0)
+                {
+                    TB_Display.Text = "Erreur : /0";
+                    return;
+                }
+                result = NB1 / NB2;
+            }
+
+            TB_Display.Text = result.ToString();
+        }
+
+        // ===== Effacer (C) =====
+        private void Btn_Ctrl_Click(object sender, RoutedEventArgs e)
+        {
+            TB_Display.Text = "";
+            NB1 = 0;
+            NB2 = 0;
+            result = 0;
+            operation = ' ';
         }
 
         private void TB_Display_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+
         }
     }
 }
