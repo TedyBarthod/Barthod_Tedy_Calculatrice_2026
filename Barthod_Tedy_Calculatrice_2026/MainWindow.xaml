@@ -5,131 +5,144 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Barthod_Tedy_Calculatrice_2026"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Calculatrice" Height="500" Width="350"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#D6EADF">
 
-    <Window.Resources>
+	<Grid>
 
-        <!-- ===== Style commun pour TOUS les boutons ===== -->
-        <Style TargetType="{x:Type Button}">
-            <Setter Property="Margin" Value="6"/>
-            <Setter Property="FontSize" Value="26"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#3C3C3C"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
+		
+		<Grid.Resources>
 
-            <!-- Coins arrondis via ControlTemplate -->
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="15">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+			<!-- Style de tous les boutons (chiffres) -->
+			<Style TargetType="{x:Type Button}">
+				<Setter Property="Margin" Value="6"/>
+				<Setter Property="FontSize" Value="26"/>
+				<Setter Property="FontWeight" Value="Bold"/>
+				<Setter Property="Foreground" Value="#2B2B3A"/>
+				<Setter Property="Background" Value="#95B8D1"/>
+				<Setter Property="BorderThickness" Value="0"/>
 
-            <Style.Triggers>
-                <!-- Survol de la souris -->
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#5A5A5A"/>
-                </Trigger>
+				<!-- Coins arrondis (slide 30) -->
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="Button">
+							<Border CornerRadius="15"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+								<ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="{TemplateBinding Padding}"/>
+							</Border>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
 
-                <!-- Petit flash au clic -->
-                <EventTrigger RoutedEvent="Click">
-                    <EventTrigger.Actions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <ColorAnimation
-                                    Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
-                                    To="WhiteSmoke"
-                                    Duration="0:0:0.08"
-                                    AutoReverse="True"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger.Actions>
-                </EventTrigger>
-            </Style.Triggers>
-        </Style>
+			
+				<Style.Triggers>
 
-        <!-- ===== Style pour les boutons opérateurs (+ - * /) ===== -->
-        <Style x:Key="OperateurStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#FF9500"/>
-        </Style>
+					<!-- Souris sur le bouton -->
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Opacity" Value="0.8"/>
+					</Trigger>
 
-        <!-- ===== Style pour le bouton égale ===== -->
-        <Style x:Key="EgaleStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#34C759"/>
-        </Style>
+					<!-- Clic sur le bouton -->
+					<EventTrigger RoutedEvent="Click">
+						<EventTrigger.Actions>
+							<BeginStoryboard>
+								<Storyboard BeginTime="00:00:00" AutoReverse="True">
+									<ColorAnimation
+                                        Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                        To="WhiteSmoke"
+                                        Duration="0:0:0.05"/>
+								</Storyboard>
+							</BeginStoryboard>
+						</EventTrigger.Actions>
+					</EventTrigger>
 
-        <!-- ===== Style pour le bouton ctrl / clear ===== -->
-        <Style x:Key="CtrlStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#FF3B30"/>
-        </Style>
+				</Style.Triggers>
+			</Style>
 
-        <!-- ===== Style de la TextBox d'affichage ===== -->
-        <Style TargetType="{x:Type TextBox}">
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Background" Value="#2A2A2A"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="40"/>
-            <Setter Property="HorizontalContentAlignment" Value="Right"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="10,0"/>
-        </Style>
+			<!-- Opérateurs (+ - * /) -->
+			<Style x:Key="OperateurStyle" TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Background" Value="#809BCE"/>
+			</Style>
 
-    </Window.Resources>
+			<!-- Égale -->
+			<Style x:Key="EgaleStyle" TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Background" Value="#B8E0D2"/>
+			</Style>
 
-    <Grid>
+			<!-- Effacer (C) -->
+			<Style x:Key="CtrlStyle" TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource {x:Type Button}}">
+				<Setter Property="Background" Value="#EAC4D5"/>
+			</Style>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+			<!-- Écran d'affichage -->
+			<Style TargetType="{x:Type TextBox}">
+				<Setter Property="Margin" Value="10"/>
+				<Setter Property="Background" Value="#F7FBF9"/>
+				<Setter Property="Foreground" Value="#2B2B3A"/>
+				<Setter Property="FontSize" Value="40"/>
+				<Setter Property="HorizontalContentAlignment" Value="Right"/>
+				<Setter Property="VerticalContentAlignment" Value="Center"/>
+				<Setter Property="BorderBrush" Value="#809BCE"/>
+				<Setter Property="BorderThickness" Value="2"/>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="90"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+				<Style.Resources>
+					<Style TargetType="Border">
+						<Setter Property="CornerRadius" Value="12"/>
+					</Style>
+				</Style.Resources>
+			</Style>
 
-        <!-- Écran d'affichage -->
-        <TextBox Grid.Row="0" Grid.ColumnSpan="4"
-                  Name="TB_Display"
-                  TextChanged="TB_Display_TextChanged"/>
+		</Grid.Resources>
 
-        <!-- Ligne 1 -->
-        <Button Grid.Row="1" Grid.Column="0" Name="BTN_1" Content="1" Click="BTN_1_Click"/>
-        <Button Grid.Row="1" Grid.Column="1" Name="BTN_2" Content="2" Click="BTN_2_Click"/>
-        <Button Grid.Row="1" Grid.Column="2" Name="BTN_3" Content="3" Click="BTN_3_Click"/>
-        <Button Grid.Row="1" Grid.Column="3" Name="BTN_Plus" Content="+" Style="{StaticResource OperateurStyle}" Click="BTN_Plus_Click"/>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
 
-        <!-- Ligne 2 -->
-        <Button Grid.Row="2" Grid.Column="0" Name="BTN_4" Content="4" Click="BTN_4_Click"/>
-        <Button Grid.Row="2" Grid.Column="1" Name="BTN_5" Content="5" Click="BTN_5_Click"/>
-        <Button Grid.Row="2" Grid.Column="2" Name="BTN_6" Content="6" Click="BTN_6_Click"/>
-        <Button Grid.Row="2" Grid.Column="3" Name="BTN_Moin" Content="-" Style="{StaticResource OperateurStyle}" Click="BTN_Moin_Click"/>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="90"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
 
-        <!-- Ligne 3 -->
-        <Button Grid.Row="3" Grid.Column="0" Name="BTN_7" Content="7" Click="BTN_7_Click"/>
-        <Button Grid.Row="3" Grid.Column="1" Name="BTN_8" Content="8" Click="BTN_8_Click"/>
-        <Button Grid.Row="3" Grid.Column="2" Name="BTN_9" Content="9" Click="BTN_9_Click"/>
-        <Button Grid.Row="3" Grid.Column="3" Name="BTN_Multipliee" Content="*" Style="{StaticResource OperateurStyle}" Click="BTN_Multipliee_Click"/>
+		<!-- Écran -->
+		<TextBox Grid.Row="0" Grid.ColumnSpan="4" Name="TB_Display" TextChanged="TB_Display_TextChanged"/>
 
-        <!-- Ligne 4 -->
-        <Button Grid.Row="4" Grid.Column="0" Name="Btn_0" Content="0" Click="Btn_0_Click"/>
-        <Button Grid.Row="4" Grid.Column="1" Name="Btn_Ctrl" Content="C" Style="{StaticResource CtrlStyle}" Click="Btn_Ctrl_Click"/>
-        <Button Grid.Row="4" Grid.Column="2" Name="Btn_egale" Content="=" Style="{StaticResource EgaleStyle}" Click="Btn_egale_Click"/>
-        <Button Grid.Row="4" Grid.Column="3" Name="Btn_divisée" Content="/" Style="{StaticResource OperateurStyle}" Click="Btn_divisée_Click"/>
+		<!-- Ligne 1 -->
+		<Button Grid.Row="1" Grid.Column="0" Name="BTN_1" Content="1" Click="BTN_1_Click"/>
+		<Button Grid.Row="1" Grid.Column="1" Name="BTN_2" Content="2" Click="BTN_2_Click"/>
+		<Button Grid.Row="1" Grid.Column="2" Name="BTN_3" Content="3" Click="BTN_3_Click"/>
+		<Button Grid.Row="1" Grid.Column="3" Name="BTN_Plus" Content="+" Style="{StaticResource OperateurStyle}" Click="BTN_Plus_Click"/>
 
-    </Grid>
+		<!-- Ligne 2 -->
+		<Button Grid.Row="2" Grid.Column="0" Name="BTN_4" Content="4" Click="BTN_4_Click"/>
+		<Button Grid.Row="2" Grid.Column="1" Name="BTN_5" Content="5" Click="BTN_5_Click"/>
+		<Button Grid.Row="2" Grid.Column="2" Name="BTN_6" Content="6" Click="BTN_6_Click"/>
+		<Button Grid.Row="2" Grid.Column="3" Name="BTN_Moin" Content="-" Style="{StaticResource OperateurStyle}" Click="BTN_Moin_Click"/>
+
+		<!-- Ligne 3 -->
+		<Button Grid.Row="3" Grid.Column="0" Name="BTN_7" Content="7" Click="BTN_7_Click"/>
+		<Button Grid.Row="3" Grid.Column="1" Name="BTN_8" Content="8" Click="BTN_8_Click"/>
+		<Button Grid.Row="3" Grid.Column="2" Name="BTN_9" Content="9" Click="BTN_9_Click"/>
+		<Button Grid.Row="3" Grid.Column="3" Name="BTN_Multipliee" Content="*" Style="{StaticResource OperateurStyle}" Click="BTN_Multipliee_Click"/>
+
+		<!-- Ligne 4 -->
+		<Button Grid.Row="4" Grid.Column="0" Name="Btn_0" Content="0" Click="Btn_0_Click"/>
+		<Button Grid.Row="4" Grid.Column="1" Name="Btn_Ctrl" Content="C" Style="{StaticResource CtrlStyle}" Click="Btn_Ctrl_Click"/>
+		<Button Grid.Row="4" Grid.Column="2" Name="Btn_egale" Content="=" Style="{StaticResource EgaleStyle}" Click="Btn_egale_Click"/>
+		<Button Grid.Row="4" Grid.Column="3" Name="Btn_divisée" Content="/" Style="{StaticResource OperateurStyle}" Click="Btn_divisée_Click"/>
+
+	</Grid>
 </Window>

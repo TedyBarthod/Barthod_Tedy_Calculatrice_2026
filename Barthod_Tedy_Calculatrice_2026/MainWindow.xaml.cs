@@ -28,7 +28,28 @@ namespace Barthod_Tedy_Calculatrice_2026
             InitializeComponent();
         }
 
-        // ===== Chiffres =====
+        // Fonctions  
+        int Addition(int a, int b)
+        {
+            return a + b;
+        }
+
+        int Soustraction(int a, int b)
+        {
+            return a - b;
+        }
+
+        int Multiplication(int a, int b)
+        {
+            return a * b;
+        }
+
+        int Division(int a, int b)
+        {
+            return a / b;
+        }
+
+        // Chiffres
         private void BTN_1_Click(object sender, RoutedEventArgs e)
         {
             TB_Display.Text = TB_Display.Text + "1";
@@ -79,69 +100,86 @@ namespace Barthod_Tedy_Calculatrice_2026
             TB_Display.Text = TB_Display.Text + "0";
         }
 
-        // ===== Opérateurs =====
-        // Quand on clique sur un opérateur : on mémorise NB1 et l'opérateur,
-        // puis on vide l'écran pour laisser l'utilisateur taper NB2
+        // Opérateurs 
+        // On mémorise NB1 AVANT d'écraser l'écran avec le symbole.
+        // Le if évite de planter si l'écran est vide.
 
         private void BTN_Plus_Click(object sender, RoutedEventArgs e)
         {
-            NB1 = int.Parse(TB_Display.Text);
-            operation = '+';
-            TB_Display.Text = "";
+            if (TB_Display.Text != "")
+            {
+                NB1 = int.Parse(TB_Display.Text);
+                operation = '+';
+                TB_Display.Text = "+";
+            }
         }
 
         private void BTN_Moin_Click(object sender, RoutedEventArgs e)
         {
-            NB1 = int.Parse(TB_Display.Text);
-            operation = '-';
-            TB_Display.Text = "";
+            if (TB_Display.Text != "")
+            {
+                NB1 = int.Parse(TB_Display.Text);
+                operation = '-';
+                TB_Display.Text = "-";
+            }
         }
 
         private void BTN_Multipliee_Click(object sender, RoutedEventArgs e)
         {
-            NB1 = int.Parse(TB_Display.Text);
-            operation = '*';
-            TB_Display.Text = "";
+            if (TB_Display.Text != "")
+            {
+                NB1 = int.Parse(TB_Display.Text);
+                operation = '*';
+                TB_Display.Text = "*";
+            }
         }
 
         private void Btn_divisée_Click(object sender, RoutedEventArgs e)
         {
-            NB1 = int.Parse(TB_Display.Text);
-            operation = '/';
-            TB_Display.Text = "";
+            if (TB_Display.Text != "")
+            {
+                NB1 = int.Parse(TB_Display.Text);
+                operation = '/';
+                TB_Display.Text = "/";
+            }
         }
 
-        // ===== Égale =====
+        //  Égale 
         private void Btn_egale_Click(object sender, RoutedEventArgs e)
         {
-            NB2 = int.Parse(TB_Display.Text);
+            // il faut au moins un symbole + un chiffre à l'écran (ex : "+3")
+            if (TB_Display.Text.Length > 1)
+            {
+                // on enlève le symbole du début pour garder le nombre
+                NB2 = int.Parse(TB_Display.Text.Substring(1));
 
-            if (operation == '+')
-            {
-                result = NB1 + NB2;
-            }
-            else if (operation == '-')
-            {
-                result = NB1 - NB2;
-            }
-            else if (operation == '*')
-            {
-                result = NB1 * NB2;
-            }
-            else if (operation == '/')
-            {
-                if (NB2 == 0)
+                if (operation == '+')
                 {
-                    TB_Display.Text = "Erreur : /0";
-                    return;
+                    result = Addition(NB1, NB2);
                 }
-                result = NB1 / NB2;
-            }
+                else if (operation == '-')
+                {
+                    result = Soustraction(NB1, NB2);
+                }
+                else if (operation == '*')
+                {
+                    result = Multiplication(NB1, NB2);
+                }
+                else if (operation == '/')
+                {
+                    if (NB2 == 0)
+                    {
+                        TB_Display.Text = "Erreur : /0";
+                        return;
+                    }
+                    result = Division(NB1, NB2);
+                }
 
-            TB_Display.Text = result.ToString();
+                TB_Display.Text = result.ToString();
+            }
         }
 
-        // ===== Effacer (C) =====
+        //Effacer
         private void Btn_Ctrl_Click(object sender, RoutedEventArgs e)
         {
             TB_Display.Text = "";
