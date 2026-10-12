@@ -1,56 +1,52 @@
-﻿// ====================================================================
-//  Projet   : Calculatrice WPF - TP BTS CIEL 1
-//  Auteur   : Tedy Barthod
-//  Date     : octobre 2026
-//  Fichier  : MainWindow.xaml.cs
-//  Rôle     : logique de la calculatrice (le XAML s'occupe de l'apparence)
-//
-//  Principe :
-//   1. L'utilisateur tape un nombre : il s'écrit sur l'écran (TB_Display).
-//   2. Il clique sur un opérateur : le nombre est rangé dans NB1,
-//      l'opérateur dans "operation", et l'écran se vide.
-//      La petite ligne du haut (TB_Expression) rappelle le calcul : "12 +".
-//   3. Il tape le deuxième nombre puis "=" : le nombre est rangé dans NB2,
-//      on compare "operation" avec des if / else if et on appelle
-//      la bonne fonction (Addition, Soustraction...).
-//
-//  Fonctionnalités :
-//   - Version 1 : chiffres, virgule, + - * /, =, C, messages d'erreur
-//     (division par 0, nombre trop grand, entrée invalide avec try / catch).
-//   - Version 2 : +/-, %, racine carrée, mémoire (MC MR M+ M-),
-//     calculs à la suite (2 + 3 * 4 = 20, de gauche à droite).
-// ====================================================================
+﻿/*
+ * Projet  : Calculatrice WPF
+ * Auteur  : Tedy Barthod - BTS CIEL 1
+ * Date    : octobre 2026
+ * Fichier : MainWindow.xaml.cs
+ * Rôle    : ce qui se passe quand on clique sur les boutons
+ *
+ * Fonctionnement :
+ * - on tape un nombre, il s'écrit sur l'écran
+ * - on clique sur un opérateur : le nombre va dans NB1 et l'opérateur dans operation
+ * - on tape le 2e nombre puis = : il va dans NB2 et on appelle la bonne fonction
+ */
 
 using System;
-using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace Barthod_Tedy_Calculatrice_2026
 {
     public partial class MainWindow : Window
     {
-        // ================================================================
-        //  Variables
-        // ================================================================
+        // déclaration des variables
         double NB1 = 0;          // premier nombre
         double NB2 = 0;          // deuxième nombre
         double result = 0;       // résultat du calcul
-        double memoire = 0;      // nombre gardé par les boutons mémoire
-        char operation = ' ';    // opérateur choisi : '+', '-', '*' ou '/' (' ' = aucun)
-        bool erreur = false;     // true : l'écran affiche un message d'erreur
-        bool nouveau = false;    // true : le prochain chiffre remplace le nombre affiché
-
-        // Culture française : la virgule sépare les décimales (2,5)
-        CultureInfo culture = new CultureInfo("fr-FR");
+        double memoire = 0;      // nombre gardé avec M+ et M-
+        char operation = ' ';    // opérateur choisi, ' ' = pas encore choisi
+        bool erreur = false;     // true quand l'écran affiche une erreur
+        bool nouveau = false;    // true quand le prochain chiffre doit effacer l'écran
+        bool virgule = false;    // true quand le nombre a déjà une virgule
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        // ================================================================
-        //  Fonctions de calcul : une fonction par opération
-        // ================================================================
+        // ----- Fonctions de calcul -----
+
         double Addition(double a, double b)
         {
             return a + b;
@@ -86,20 +82,18 @@ namespace Barthod_Tedy_Calculatrice_2026
             return -a;
         }
 
-        // ================================================================
-        //  Conversions entre le texte de l'écran et les nombres
-        // ================================================================
+        // ----- Fonctions utilisées par plusieurs boutons -----
 
-        // Texte -> nombre (ex : "2,5" donne 2.5)
-        // try / catch : si le texte n'est pas un nombre, on affiche une erreur
-        // au lieu de laisser le programme planter
+        // Transforme le texte de l'écran en nombre.
+        // Si on a tapé autre chose qu'un nombre (ex : abc), on affiche
+        // une erreur au lieu de faire planter le programme.
         double Lire(string texte)
         {
             double nombre = 0;
 
             try
             {
-                nombre = double.Parse(texte, culture);
+                nombre = double.Parse(texte);
             }
             catch (Exception)
             {
@@ -109,39 +103,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             return nombre;
         }
 
-        // Nombre -> texte avec une virgule (ex : 2.5 donne "2,5")
-        // "G12" : 12 chiffres au maximum, pour que 0,1 + 0,2 affiche 0,3
-        string Formater(double nombre)
-        {
-            if (nombre == 0)
-            {
-                nombre = 0;   // évite que l'écran affiche "-0"
-            }
-
-            return nombre.ToString("G12", culture);
-        }
-
-        // Cherche une virgule dans le texte, caractère par caractère
-        bool ContientVirgule(string texte)
-        {
-            bool trouve = false;
-
-            for (int i = 0; i < texte.Length; i++)
-            {
-                if (texte[i] == ',')
-                {
-                    trouve = true;
-                }
-            }
-
-            return trouve;
-        }
-
-        // ================================================================
-        //  Fonctions utilisées par plusieurs boutons
-        // ================================================================
-
-        // Remet la calculatrice à zéro (la mémoire est conservée)
+        // Remet tout à zéro (sauf la mémoire)
         void Effacer()
         {
             TB_Display.Text = "";
@@ -152,6 +114,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             operation = ' ';
             erreur = false;
             nouveau = false;
+            virgule = false;
         }
 
         // Affiche un message d'erreur à la place du nombre
@@ -163,7 +126,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             erreur = true;
         }
 
-        // Prépare l'écran avant d'écrire un chiffre ou une virgule
+        // Avant d'écrire un chiffre : on enlève l'erreur ou l'ancien résultat
         void PreparerSaisie()
         {
             if (erreur)
@@ -173,35 +136,34 @@ namespace Barthod_Tedy_Calculatrice_2026
 
             if (nouveau)
             {
-                // le nombre affiché est terminé : on en commence un autre
                 TB_Display.Text = "";
                 nouveau = false;
+                virgule = false;
 
+                // si le calcul d'avant est fini, on efface aussi le rappel
                 if (operation == ' ')
                 {
-                    TB_Expression.Text = "";   // le calcul précédent est fini
+                    TB_Expression.Text = "";
                 }
             }
         }
 
+        // Ajoute un chiffre à la fin du nombre
         void AjouterChiffre(string chiffre)
         {
             PreparerSaisie();
 
             if (TB_Display.Text == "0")
             {
-                // on remplace le 0 pour ne pas afficher "05"
-                TB_Display.Text = chiffre;
+                TB_Display.Text = chiffre;   // pour ne pas avoir "05"
             }
-            else if (TB_Display.Text.Length < 12)
+            else
             {
-                // on ajoute le chiffre à la suite (12 caractères au maximum)
                 TB_Display.Text = TB_Display.Text + chiffre;
             }
         }
 
-        // Calcule NB1 (operation) NB2 et range le résultat dans "result"
-        // En cas de problème, affiche une erreur à la place
+        // Fait le calcul NB1 (operation) NB2 et met le résultat dans result
         void Calculer()
         {
             NB2 = Lire(TB_Display.Text);
@@ -230,45 +192,44 @@ namespace Barthod_Tedy_Calculatrice_2026
                 }
             }
 
-            // Le résultat est trop grand pour une variable double
-            if (!erreur && double.IsInfinity(result))
+            // plus de 12 chiffres : le nombre ne tient plus sur l'écran
+            if (!erreur && (result > 999999999999 || result < -999999999999))
             {
                 AfficherErreur("Nombre trop grand");
             }
         }
 
+        // Garde le premier nombre et l'opérateur choisi
         void ChoisirOperateur(char op)
         {
             if (!erreur)
             {
                 if (TB_Display.Text != "" && operation != ' ')
                 {
-                    // un calcul attend déjà son résultat (ex : 2 + 3 puis *) :
-                    // on le termine, et son résultat devient le premier nombre
+                    // un calcul attend déjà (ex : 2 + 3 puis *), on le fait d'abord
                     Calculer();
                     NB1 = result;
                 }
                 else if (TB_Display.Text != "")
                 {
-                    // premier nombre du calcul
                     NB1 = Lire(TB_Display.Text);
                 }
 
-                // On retient l'opérateur seulement s'il y a un premier nombre.
-                // Écran vide + opérateur déjà choisi : on change juste d'opérateur.
+                // il faut un premier nombre pour choisir un opérateur
+                // (si l'écran est vide, on change juste d'opérateur)
                 if (!erreur && (TB_Display.Text != "" || operation != ' '))
                 {
                     operation = op;
-                    TB_Expression.Text = Formater(NB1) + " " + op;
+                    TB_Expression.Text = NB1.ToString() + " " + op;
                     TB_Display.Text = "";
                     nouveau = false;
+                    virgule = false;
                 }
             }
         }
 
-        // ================================================================
-        //  Chiffres
-        // ================================================================
+        // ----- Chiffres -----
+
         private void BTN_0_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("0");
@@ -319,28 +280,29 @@ namespace Barthod_Tedy_Calculatrice_2026
             AjouterChiffre("9");
         }
 
-        // ================================================================
-        //  Virgule
-        // ================================================================
+        // ----- Virgule -----
+
         private void BTN_Virgule_Click(object sender, RoutedEventArgs e)
         {
             PreparerSaisie();
 
-            if (TB_Display.Text == "")
+            // une seule virgule par nombre
+            if (!virgule)
             {
-                // pas encore de chiffre : on écrit "0,"
-                TB_Display.Text = "0,";
-            }
-            else if (!ContientVirgule(TB_Display.Text))
-            {
-                // une seule virgule par nombre : la deuxième est ignorée
-                TB_Display.Text = TB_Display.Text + ",";
+                if (TB_Display.Text == "")
+                {
+                    TB_Display.Text = "0,";
+                }
+                else
+                {
+                    TB_Display.Text = TB_Display.Text + ",";
+                }
+                virgule = true;
             }
         }
 
-        // ================================================================
-        //  Opérateurs
-        // ================================================================
+        // ----- Opérateurs -----
+
         private void BTN_Plus_Click(object sender, RoutedEventArgs e)
         {
             ChoisirOperateur('+');
@@ -361,21 +323,20 @@ namespace Barthod_Tedy_Calculatrice_2026
             ChoisirOperateur('/');
         }
 
-        // ================================================================
-        //  Égal et C
-        // ================================================================
+        // ----- Égal et C -----
+
         private void BTN_Egal_Click(object sender, RoutedEventArgs e)
         {
-            // il faut un opérateur ET un deuxième nombre
+            // il faut un opérateur et un deuxième nombre
             if (!erreur && operation != ' ' && TB_Display.Text != "")
             {
                 Calculer();
 
                 if (!erreur)
                 {
-                    TB_Expression.Text = Formater(NB1) + " " + operation + " " + Formater(NB2) + " =";
-                    TB_Display.Text = Formater(result);
-                    operation = ' ';   // le calcul est terminé
+                    TB_Expression.Text = NB1.ToString() + " " + operation + " " + NB2.ToString() + " =";
+                    TB_Display.Text = result.ToString();
+                    operation = ' ';   // calcul fini
                     nouveau = true;    // le prochain chiffre commence un nouveau calcul
                 }
             }
@@ -386,11 +347,10 @@ namespace Barthod_Tedy_Calculatrice_2026
             Effacer();
         }
 
-        // ================================================================
-        //  +/-   %   racine carrée
-        //  Ces boutons transforment le nombre affiché. Le nombre est alors
-        //  terminé : le prochain chiffre en commence un autre.
-        // ================================================================
+        // ----- +/-  %  racine -----
+        // Ces boutons changent le nombre affiché.
+        // Après, le prochain chiffre commence un nouveau nombre.
+
         private void BTN_Signe_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
@@ -399,7 +359,7 @@ namespace Barthod_Tedy_Calculatrice_2026
 
                 if (!erreur && nombre != 0)
                 {
-                    TB_Display.Text = Formater(Signe(nombre));
+                    TB_Display.Text = Signe(nombre).ToString();
                     nouveau = true;
                 }
             }
@@ -413,7 +373,7 @@ namespace Barthod_Tedy_Calculatrice_2026
 
                 if (!erreur)
                 {
-                    TB_Display.Text = Formater(Pourcentage(nombre));
+                    TB_Display.Text = Pourcentage(nombre).ToString();
                     nouveau = true;
                 }
             }
@@ -433,25 +393,23 @@ namespace Barthod_Tedy_Calculatrice_2026
                     }
                     else
                     {
-                        TB_Display.Text = Formater(Racine(nombre));
+                        TB_Display.Text = Racine(nombre).ToString();
                         nouveau = true;
                     }
                 }
             }
         }
 
-        // ================================================================
-        //  Mémoire
-        //  MC : vide la mémoire          MR : affiche la mémoire
-        //  M+ : ajoute le nombre affiché  M- : retire le nombre affiché
-        //  Le petit "M" (TB_Memoire) indique que la mémoire est utilisée.
-        // ================================================================
+        // ----- Mémoire -----
+
+        // MC : vide la mémoire
         private void BTN_MC_Click(object sender, RoutedEventArgs e)
         {
             memoire = 0;
             TB_Memoire.Text = "";
         }
 
+        // MR : affiche la mémoire
         private void BTN_MR_Click(object sender, RoutedEventArgs e)
         {
             if (erreur)
@@ -461,13 +419,14 @@ namespace Barthod_Tedy_Calculatrice_2026
 
             if (operation == ' ')
             {
-                TB_Expression.Text = "";   // le calcul précédent est fini
+                TB_Expression.Text = "";
             }
 
-            TB_Display.Text = Formater(memoire);
+            TB_Display.Text = memoire.ToString();
             nouveau = true;
         }
 
+        // M+ : ajoute le nombre affiché à la mémoire
         private void BTN_MPlus_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
@@ -483,6 +442,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             }
         }
 
+        // M- : enlève le nombre affiché de la mémoire
         private void BTN_MMoins_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
