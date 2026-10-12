@@ -1,16 +1,4 @@
-﻿/*
- * Projet  : Calculatrice WPF
- * Auteur  : Tedy Barthod - BTS CIEL 1
- * Date    : octobre 2026
- * Fichier : MainWindow.xaml.cs
- * Rôle    : ce qui se passe quand on clique sur les boutons
- *
- * Fonctionnement :
- * - on tape un nombre, il s'écrit sur l'écran
- * - on clique sur un opérateur : le nombre va dans NB1 et l'opérateur dans operation
- * - on tape le 2e nombre puis = : il va dans NB2 et on appelle la bonne fonction
- */
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,7 +92,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // Remet tout à zéro (sauf la mémoire)
-        void Effacer()
+        public void Effacer()
         {
             TB_Display.Text = "";
             TB_Expression.Text = "";
@@ -118,7 +106,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // Affiche un message d'erreur à la place du nombre
-        void AfficherErreur(string message)
+        public void AfficherErreur(string message)
         {
             TB_Display.Text = message;
             TB_Expression.Text = "";
@@ -149,7 +137,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // Ajoute un chiffre à la fin du nombre
-        void AjouterChiffre(string chiffre)
+        public void AjouterChiffre(string chiffre)
         {
             PreparerSaisie();
 
@@ -164,7 +152,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // Fait le calcul NB1 (operation) NB2 et met le résultat dans result
-        void Calculer()
+        public void Calculer()
         {
             NB2 = Lire(TB_Display.Text);
 
@@ -200,7 +188,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // Garde le premier nombre et l'opérateur choisi
-        void ChoisirOperateur(char op)
+        public void ChoisirOperateur(char op)
         {
             if (!erreur)
             {
@@ -230,59 +218,59 @@ namespace Barthod_Tedy_Calculatrice_2026
 
         // ----- Chiffres -----
 
-        private void BTN_0_Click(object sender, RoutedEventArgs e)
+        public void BTN_0_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("0");
         }
 
-        private void BTN_1_Click(object sender, RoutedEventArgs e)
+        public  void BTN_1_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("1");
         }
 
-        private void BTN_2_Click(object sender, RoutedEventArgs e)
+        public void BTN_2_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("2");
         }
 
-        private void BTN_3_Click(object sender, RoutedEventArgs e)
+        public void BTN_3_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("3");
         }
 
-        private void BTN_4_Click(object sender, RoutedEventArgs e)
+        public void BTN_4_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("4");
         }
 
-        private void BTN_5_Click(object sender, RoutedEventArgs e)
+        public void BTN_5_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("5");
         }
 
-        private void BTN_6_Click(object sender, RoutedEventArgs e)
+        public void BTN_6_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("6");
         }
 
-        private void BTN_7_Click(object sender, RoutedEventArgs e)
+        public void BTN_7_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("7");
         }
 
-        private void BTN_8_Click(object sender, RoutedEventArgs e)
+        public void BTN_8_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("8");
         }
 
-        private void BTN_9_Click(object sender, RoutedEventArgs e)
+        public void BTN_9_Click(object sender, RoutedEventArgs e)
         {
             AjouterChiffre("9");
         }
 
         // ----- Virgule -----
 
-        private void BTN_Virgule_Click(object sender, RoutedEventArgs e)
+        public void BTN_Virgule_Click(object sender, RoutedEventArgs e)
         {
             PreparerSaisie();
 
@@ -303,29 +291,29 @@ namespace Barthod_Tedy_Calculatrice_2026
 
         // ----- Opérateurs -----
 
-        private void BTN_Plus_Click(object sender, RoutedEventArgs e)
+        public void BTN_Plus_Click(object sender, RoutedEventArgs e)
         {
             ChoisirOperateur('+');
         }
 
-        private void BTN_Moins_Click(object sender, RoutedEventArgs e)
+        public  void BTN_Moins_Click(object sender, RoutedEventArgs e)
         {
             ChoisirOperateur('-');
         }
 
-        private void BTN_Fois_Click(object sender, RoutedEventArgs e)
+        public void BTN_Fois_Click(object sender, RoutedEventArgs e)
         {
             ChoisirOperateur('*');
         }
 
-        private void BTN_Divise_Click(object sender, RoutedEventArgs e)
+        public void BTN_Divise_Click(object sender, RoutedEventArgs e)
         {
             ChoisirOperateur('/');
         }
 
         // ----- Égal et C -----
 
-        private void BTN_Egal_Click(object sender, RoutedEventArgs e)
+        public void BTN_Egal_Click(object sender, RoutedEventArgs e)
         {
             // il faut un opérateur et un deuxième nombre
             if (!erreur && operation != ' ' && TB_Display.Text != "")
@@ -342,7 +330,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             }
         }
 
-        private void BTN_C_Click(object sender, RoutedEventArgs e)
+        public void BTN_C_Click(object sender, RoutedEventArgs e)
         {
             Effacer();
         }
@@ -351,7 +339,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         // Ces boutons changent le nombre affiché.
         // Après, le prochain chiffre commence un nouveau nombre.
 
-        private void BTN_Signe_Click(object sender, RoutedEventArgs e)
+        public void BTN_Signe_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
             {
@@ -365,7 +353,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             }
         }
 
-        private void BTN_Pourcent_Click(object sender, RoutedEventArgs e)
+        public void BTN_Pourcent_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
             {
@@ -379,7 +367,7 @@ namespace Barthod_Tedy_Calculatrice_2026
             }
         }
 
-        private void BTN_Racine_Click(object sender, RoutedEventArgs e)
+        public void BTN_Racine_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
             {
@@ -403,14 +391,14 @@ namespace Barthod_Tedy_Calculatrice_2026
         // ----- Mémoire -----
 
         // MC : vide la mémoire
-        private void BTN_MC_Click(object sender, RoutedEventArgs e)
+        public void BTN_MC_Click(object sender, RoutedEventArgs e)
         {
             memoire = 0;
             TB_Memoire.Text = "";
         }
 
         // MR : affiche la mémoire
-        private void BTN_MR_Click(object sender, RoutedEventArgs e)
+        public void BTN_MR_Click(object sender, RoutedEventArgs e)
         {
             if (erreur)
             {
@@ -427,7 +415,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // M+ : ajoute le nombre affiché à la mémoire
-        private void BTN_MPlus_Click(object sender, RoutedEventArgs e)
+        public void BTN_MPlus_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
             {
@@ -443,7 +431,7 @@ namespace Barthod_Tedy_Calculatrice_2026
         }
 
         // M- : enlève le nombre affiché de la mémoire
-        private void BTN_MMoins_Click(object sender, RoutedEventArgs e)
+        public void BTN_MMoins_Click(object sender, RoutedEventArgs e)
         {
             if (!erreur && TB_Display.Text != "")
             {
